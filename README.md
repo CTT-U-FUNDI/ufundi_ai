@@ -1,1 +1,3 @@
-# ufundi_ai
+﻿# UFUNDI Site Public
+# Ce dossier = SITE VITRINE uniquement
+# Aucune donnée sensible
