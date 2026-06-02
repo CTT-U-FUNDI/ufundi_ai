@@ -1,0 +1,9 @@
+﻿# UFUNDI - Fichier de version publique
+{
+    "version": "1.0.0",
+    "date": "2026-06-02",
+    "build": "public",
+    "changelog": "Version initiale publique",
+    "files": 12,
+    "securite": "AES-256-GCM + Argon2id"
+}

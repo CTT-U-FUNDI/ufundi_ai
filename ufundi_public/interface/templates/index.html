@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UFUNDI · Identité Quantique</title>
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate">
+    <meta name="referrer" content="no-referrer">
+    <meta name="format-detection" content="telephone=no, email=no, address=no, date=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, private, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' http://127.0.0.1:* http://localhost:* ws://127.0.0.1:* ws://localhost:*; frame-src 'none'; object-src 'none'; media-src 'none'; form-action 'self'; base-uri 'self';">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/ufundi.css">
+    <link rel="stylesheet" href="/static/ufundi_cursor.css">
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<!-- LOGIN -->
+<div class="screen-center" id="loginScreen">
+    <div class="auth-card">
+        <div class="logo">🛡️</div><h1>UFUNDI</h1><div class="subtitle">Connexion Quantique</div>
+        <div class="field"><label>Email UFUNDI</label><input type="text" id="loginEmail" placeholder="prenom.nom@ufundi.ai" autocomplete="off" name="uf_l_e" data-lpignore="true"></div>
+        <div class="field"><label>Mot de passe quotidien</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="off" name="uf_l_p" data-lpignore="true"></div>
+        <button class="btn btn-primary" onclick="handleLogin()">Initialiser la connexion</button>
+        <button class="btn btn-outline" onclick="showCreateStep1()">Générer une identité</button>
+        <div class="toast" id="loginToast"></div>
+    </div>
+</div>
+
+<!-- CRÉATION ÉTAPE 1 -->
+<div class="screen-center hidden" id="createStep1Screen">
+    <div class="auth-card">
+        <div class="logo">🔮</div><h1>Nouveau Profil</h1>
+        <div class="subtitle">Mot de passe <span id="step1Num">1</span>/6</div>
+        <div class="rules" id="step1Rules"><span id="rMaj">A-Z</span><span id="rMin">a-z</span><span id="rDigit">0-9</span><span id="rSpecial">!@#</span><span id="rLength">8+</span><span id="rUnique">Unique</span></div>
+        <div class="progress-dots" id="step1Dots"><div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div><div class="dot" id="d4"></div><div class="dot" id="d5"></div><div class="dot" id="d6"></div></div>
+        <div class="field"><label>Empreinte de sécurité</label><input type="password" id="step1Pass" placeholder="••••••••" oninput="validateStep1()" autocomplete="off" name="uf_s1" data-lpignore="true"></div>
+        <button class="btn btn-primary" id="step1Btn" onclick="submitStep1()" disabled>Valider la matrice</button>
+        <button class="btn btn-outline" onclick="showLogin()">Annuler</button>
+        <div class="toast" id="step1Toast"></div>
+    </div>
+</div>
+
+<!-- CRÉATION ÉTAPE 2 -->
+<div class="screen-center hidden" id="createStep2Screen">
+    <div class="auth-card">
+        <div class="logo">👤</div><h1>Votre Identité</h1><div class="subtitle">Étape 2/3</div>
+        <div class="field"><label>Prénom</label><input type="text" id="s2Prenom" placeholder="Ex: Ada" oninput="checkStep2()" autocomplete="off" name="uf_s2p" data-lpignore="true"></div>
+        <div class="field"><label>Nom</label><input type="text" id="s2Nom" placeholder="Ex: Lovelace" oninput="checkStep2()" autocomplete="off" name="uf_s2n" data-lpignore="true"></div>
+        <div class="info-box">🔑 Sélectionnez <strong>1 mot de passe quotidien</strong> actif</div>
+        <div class="daily-choices" id="dailyChoices"><button class="btn-sm" onclick="selectDaily(1)" id="daily1">MDP 1</button><button class="btn-sm" onclick="selectDaily(2)" id="daily2">MDP 2</button><button class="btn-sm" onclick="selectDaily(3)" id="daily3">MDP 3</button><button class="btn-sm" onclick="selectDaily(4)" id="daily4">MDP 4</button><button class="btn-sm" onclick="selectDaily(5)" id="daily5">MDP 5</button><button class="btn-sm" onclick="selectDaily(6)" id="daily6">MDP 6</button></div>
+        <div class="field"><label>Confirmer la clé choisie</label><input type="password" id="s2Confirm" placeholder="••••••••" oninput="checkStep2()" autocomplete="off" name="uf_s2c" data-lpignore="true"></div>
+        <button class="btn btn-primary" id="step2Btn" onclick="submitStep2()" disabled>Continuer</button>
+        <button class="btn btn-outline" onclick="showCreateStep1()">Retour</button>
+        <div class="toast" id="step2Toast"></div>
+    </div>
+</div>
+
+<!-- CRÉATION ÉTAPE 3 -->
+<div class="screen-center hidden" id="createStep3Screen">
+    <div class="auth-card">
+        <div class="logo">🔢</div><h1>Code PIN</h1><div class="subtitle">Étape 3/3</div>
+        <div class="field"><label>Email UFUNDI assigné</label><input type="text" id="s3Email" readonly class="email-display" name="uf_s3e"></div>
+        <div class="pin-options"><button class="btn-sm" id="pin4Btn" onclick="setPinLength(4)">4 Digits</button><button class="btn-sm" id="pin6Btn" onclick="setPinLength(6)">6 Digits</button></div>
+        <div class="field"><label>Séquence PIN (<span id="pinLenLabel">4</span> chiffres uniques)</label><input type="text" id="s3Pin" maxlength="4" placeholder="••••" inputmode="numeric" oninput="validatePin()" class="pin-input" autocomplete="off" name="uf_s3p" data-lpignore="true"></div>
+        <div class="rules" id="pinRules"><span id="pinLenRule">4 chiffres</span><span id="pinUniqueRule">Non séquentiel</span><span id="pinNumericRule">0-9</span></div>
+        <button class="btn btn-primary" id="step3Btn" onclick="submitStep3()" disabled>Finaliser l'identité</button>
+        <button class="btn btn-outline" onclick="showCreateStep2()">Retour</button>
+        <div class="toast" id="step3Toast"></div>
+    </div>
+</div>
+
+<!-- APPLICATION -->
+<div class="app-layout hidden" id="appScreen">
+    <div class="sidebar">
+        <div class="sidebar-header" id="profileBtn"><div class="avatar" id="userAvatar">U</div><div class="info"><div class="name" id="sidebarName">---</div><div class="status"><span class="online-dot">●</span> Connecté au Nexus</div></div></div>
+        <div class="sidebar-search"><input type="text" placeholder="Rechercher un signal..." id="searchInput" oninput="filterContacts()" autocomplete="off" name="uf_search"></div>
+        <div class="contact-list" id="contactList"></div>
+        <div class="sidebar-actions"><button class="icon-btn" onclick="showAppView('messages')" title="Messages">💬</button><button class="icon-btn" onclick="showAppView('wallet')" title="Portefeuille">💰</button><button class="icon-btn" onclick="showAppView('system')" title="Système">📢</button><button class="icon-btn" onclick="showAppView('settings')" title="Paramètres">⚙️</button><button class="icon-btn" onclick="handleLogout()" title="Déconnexion" style="color:var(--danger);">🚪</button></div>
+    </div>
+    <div class="main-panel">
+        <div class="main-header"><div class="title" id="mainTitle">💬 Hub de Communication</div></div>
+        <div class="main-content" id="mainContent">
+            <div id="viewMessages" class="app-view"><div class="empty-state"><div class="empty-icon">📡</div>En attente de transmission...</div></div>
+            <div id="viewWallet" class="app-view hidden"><div class="wallet-card"><div class="wallet-icon">🏦</div><div class="balance" id="walletBalance">0</div><div class="wallet-label">CRÉDITS UFUNDI</div></div></div>
+            <div id="viewSystem" class="app-view hidden"></div>
+            <div id="viewSettings" class="app-view hidden"><div class="settings-card"><h3>Paramètres Système</h3><p>ID Réseau : <span id="setEmail"></span></p><button class="btn btn-outline" onclick="handleLogout()">Fermer la session</button></div></div>
+        </div>
+    </div>
+</div>
+
+<div id="notificationBadge" class="notification-badge hidden" style="position:fixed;top:16px;right:16px;background:var(--danger);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;z-index:500;"><span id="notifCount">0</span></div>
+
+<script src="/static/ufundi_boost.js"></script>
+<script src="/static/ufundi_protection.js"></script>
+<script src="/static/ufundi_db.js"></script>
+<script src="/static/ufundi_ram.js"></script>
+<script src="/static/ufundi_settings.js"></script>
+<script src="/static/ufundi.js"></script>
+</body>
+</html>
